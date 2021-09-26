@@ -1,0 +1,90 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Average life expectancy around the world in 2010",
+    "fontSize": 20,
+    "font": "Lato"},
+  "width": 800,
+  "height": 600,
+  "data": {
+      "url": "https://raw.githubusercontent.com/Vulleyball/data_1/main/final_map.json",
+      "format": {
+          "type": "topojson",
+          "feature": "custom.geo"
+      }
+  },
+  "layer":[
+    
+    {
+      "transform": [
+        {"calculate": "'Data is not available in ' + datum.properties.name_long", "as": "note"}
+      ],
+      "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"},
+      "encoding": {
+        "tooltip": {
+          "field": "note"
+        }
+      }
+    },
+  {
+    "transform": [
+
+      {
+          "lookup": "properties.name_long",
+          "from": {
+              "data": {
+                  "url": "https://raw.githubusercontent.com/Vulleyball/data_1/main/data.csv"
+              },
+              "key": "Country",
+              "fields": ["Life expectancy", "Year", "Country"]
+
+
+          }
+
+      },
+
+      {
+          "filter": "datum['Life expectancy'] > 0"
+      },
+      {
+          "calculate": "datum['Life expectancy'] +0.05",
+          "as": "Life_expectancy"
+      }
+
+  ],
+  
+  "projection": {
+      "type": "equalEarth"
+  },
+  "mark": {
+      "type": "geoshape", "stroke": "white"
+  },
+  "encoding": {
+      "color": {
+          "field": "Life expectancy",
+          "type": "quantitative",
+          "scale": {
+              "type": "threshold",
+              "domain": [55,65,75,85]
+          }
+      },
+      "tooltip": [{
+              "field": "properties.name_long",
+              "type": "nominal",
+              "title": "Country"
+          },
+          {
+              "title": "Life expectancy",
+              "field": "Life expectancy",
+              "type": "quantitative"
+          }
+      ]
+  }
+  }
+],
+"config": {
+
+  "background": "#F3FAF9"
+ 
+ }
+}
